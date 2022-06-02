@@ -1,0 +1,6 @@
+/Users/miguel/git/poc-helm-agent/src/main/java/io/oferto/helm/PocHelmAgentApplication.java
+/Users/miguel/git/poc-helm-agent/src/main/java/io/oferto/helm/model/Chart.java
+/Users/miguel/git/poc-helm-agent/src/main/java/io/oferto/helm/jobs/AgentJob.java
+/Users/miguel/git/poc-helm-agent/src/main/java/io/oferto/helm/config/SQLiteDialect.java
+/Users/miguel/git/poc-helm-agent/src/main/java/io/oferto/helm/tasklets/HelmTasklet.java
+/Users/miguel/git/poc-helm-agent/src/main/java/io/oferto/helm/model/Release.java
