@@ -36,7 +36,7 @@ public class AgentJob {
 	@Autowired
 	private JobLauncher jobLauncher;
 
-	@Scheduled(cron = "*/30 * * * * *")
+	@Scheduled(cron = "0 0/1 * * * *")
 	public void launchJob() throws Exception {
 		System.out.println("Job Started at :" + new Date());
 
