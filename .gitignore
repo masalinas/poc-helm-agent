@@ -34,3 +34,4 @@ build/
 
 ### poc-helm-agent
 *.db
+.DS_Store
