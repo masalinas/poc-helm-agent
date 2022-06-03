@@ -37,7 +37,7 @@ public class AgentJob {
 	private JobLauncher jobLauncher;
 
 	@Scheduled(cron = "*/30 * * * * *")
-	public void perform() throws Exception {
+	public void launchJob() throws Exception {
 		System.out.println("Job Started at :" + new Date());
 
 		JobParameters param = new JobParametersBuilder()
