@@ -76,7 +76,6 @@ public class AgentJob {
 	@Bean
 	public HelmTasklet helmTasklet() {
 		HelmTasklet tasklet = new HelmTasklet();
-		//tasklet.setDirectory(directory);
 		
 		return tasklet;
 	}
