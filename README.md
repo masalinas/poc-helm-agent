@@ -1,5 +1,5 @@
 ## Description
-PoC Helm Agent is a scheduled job that update your Kubernete releases to the last version.
+PoC Helm Agent is a scheduled spring-boot job that update your Kubernete releases to the last version.
 
 ## Dependencies
 
