@@ -89,8 +89,8 @@ public class HelmTasklet implements Tasklet, InitializingBean {
         return releases;
 	}
 	
-	public String upgradeRelease(String chartName, String releaseName) throws IOException {
-		ProcessBuilder pb = new ProcessBuilder("sh", "-c", HELM_COMMAND + " upgrade " + chartName + " " + releaseName + " 2>&1; true");
+	public String upgradeRelease(String releaseName, String chartName) throws IOException {
+		ProcessBuilder pb = new ProcessBuilder("sh", "-c", HELM_COMMAND + " upgrade " + releaseName + " " + chartName + " 2>&1; true");
 		Process process = pb.start();
 				
         BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
