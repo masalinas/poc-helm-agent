@@ -37,30 +37,30 @@ public class AgentJob {
 	private JobLauncher jobLauncher;
 
 	@Scheduled(cron = "0 0/1 * * * *")
-	public void launchJob() throws Exception {
+	public void jobScheduler() throws Exception {
 		System.out.println("Job Started at :" + new Date());
 
-		JobParameters param = new JobParametersBuilder()
+		JobParameters jobParameters = new JobParametersBuilder()
 				.addString("JobID", String.valueOf(System.currentTimeMillis()))
 				.toJobParameters();
 
-		JobExecution execution = jobLauncher.run(updateReleases(), param);
+		JobExecution jobExecution = jobLauncher.run(updateReleases(), jobParameters);
 
-		System.out.println("Job finished with status :" + execution.getStatus());
+		System.out.println("Job finished with status :" + jobExecution.getStatus());
 	}
 	
 	@Bean
 	public Job updateReleases() {
 		return jobBuilderFactory.get("updateReleases")
 				.incrementer(new RunIdIncrementer())
-				.flow(step1())
+				.flow(step())
 				.end()
 				.build();
 	}
 	
 	@Bean
-	public Step step1() {
-		return stepBuilderFactory.get("step1")
+	public Step step() {
+		return stepBuilderFactory.get("step")
 				.tasklet(helmTasklet())
 				.build();
 	}
@@ -74,9 +74,9 @@ public class AgentJob {
 	}
 	
 	public JobLauncher getJobLauncher(JobRepository jobRepository) {
-		SimpleJobLauncher launcher = new SimpleJobLauncher();
-		launcher.setJobRepository(jobRepository);
+		SimpleJobLauncher jobLauncher = new SimpleJobLauncher();
+		jobLauncher.setJobRepository(jobRepository);
 		
-		return launcher;
+		return jobLauncher;
 	}
 }

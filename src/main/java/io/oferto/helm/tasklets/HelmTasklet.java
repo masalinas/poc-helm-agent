@@ -60,8 +60,6 @@ public class HelmTasklet implements Tasklet, InitializingBean {
         	output.append(line + "\n");
         }
         
-        //System.out.printf(output.toString());
-        
         Gson gson = new Gson();
         Chart[] charts = gson.fromJson(output.toString(), Chart[].class); 
         
@@ -80,8 +78,6 @@ public class HelmTasklet implements Tasklet, InitializingBean {
         while ((line = reader.readLine()) != null) {
         	output.append(line + "\n");
         }
-        
-        //System.out.printf(output.toString());
         
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
         Release[] releases = gson.fromJson(output.toString(), Release[].class); 
@@ -125,11 +121,7 @@ public class HelmTasklet implements Tasklet, InitializingBean {
 			List<Chart> charts = Arrays.asList(getCharts());
 			LOG.info("Exist " + charts.size() + " Charts published");
 			System.out.println();
-			
-	        /*for(Chart chart : charts) {
-	        	System.out.println(chart.getName());
-	        }*/
-	        
+				        
 	        LOG.info("STEP03: Get Releases from Kubernetes Cluster");
 	        List<Release> releases = Arrays.asList(getReleases());	        
 	        LOG.info("Exist " + releases.size() + " Releases deployed");
@@ -141,9 +133,6 @@ public class HelmTasklet implements Tasklet, InitializingBean {
 	        			ch -> {
 	        				Semver chartVersion = new Semver(ch.getApp_version());	        				        				
 	        				Semver releaseVersion = new Semver(release.getApp_version());
-	        				
-	        				//System.out.printf(chartVersion.getValue());
-	        				//System.out.printf(releaseVersion.getValue());
 	        				
 	        				return ch.getName().split("/")[1].equals(release.getName()) &&
 	        					   chartVersion.isGreaterThan(releaseVersion);
