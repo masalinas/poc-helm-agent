@@ -13,3 +13,5 @@ To add a chart repository we must execute:
 ```shell
 helm repo add chartmuseum http://localhost:8088
 ```
+
+To install helm visit the [official Helm site](https://helm.sh/docs/intro/install/)
