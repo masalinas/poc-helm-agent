@@ -18,7 +18,7 @@ import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -36,12 +36,20 @@ public class AgentJob {
 	@Autowired
 	private JobLauncher jobLauncher;
 
+	@Value("${HELM_COMMAND:#{null}}") 
+	String helmCommand;
+
+	@Value("${HELM_REPO:#{null}}") 
+	String helmRepo;
+	
 	@Scheduled(cron = "0 0/1 * * * *")
 	public void jobScheduler() throws Exception {
 		System.out.println("Job Started at :" + new Date());
 
 		JobParameters jobParameters = new JobParametersBuilder()
 				.addString("JobID", String.valueOf(System.currentTimeMillis()))
+				.addString("helmCommand", helmCommand)
+				.addString("helmRepo", helmRepo)
 				.toJobParameters();
 
 		JobExecution jobExecution = jobLauncher.run(updateReleases(), jobParameters);

@@ -28,11 +28,32 @@ public class HelmTasklet implements Tasklet, InitializingBean {
 	private final String HELM_COMMAND = "/opt/homebrew/bin/helm";
 	private final String HELM_REPO= "chartmuseum";
 	
+	private String helmCommand = HELM_COMMAND;
+	private String helmRepo = HELM_REPO;
+	
 	private static Logger LOG = LoggerFactory
 		      .getLogger(HelmTasklet.class);
 	
-	public String updateChartRepositories() throws IOException {
-		ProcessBuilder pb = new ProcessBuilder("sh", "-c", HELM_COMMAND + " repo update 2>&1; true");
+	private void configureHelmCommand(ChunkContext chunkContext) {
+		String helm_command = (String) chunkContext.getStepContext()
+	            .getJobParameters()
+	            .get("helmCommand");
+		
+		if (helm_command != null)
+			helmCommand = helm_command;
+		
+		String helm_repo = (String) chunkContext.getStepContext()
+	            .getJobParameters()
+	            .get("helmRepo");
+		
+		if (helm_repo != null)
+			helmRepo = helm_repo;
+		
+		System.out.println("helm command: " + helmCommand + " configured with repo: " + helmRepo);
+	}
+	
+	private String updateChartRepositories() throws IOException {
+		ProcessBuilder pb = new ProcessBuilder("sh", "-c", helmCommand + " repo update 2>&1; true");
 		Process process = pb.start();
 				
         BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
@@ -47,8 +68,9 @@ public class HelmTasklet implements Tasklet, InitializingBean {
         return output.toString();
 	}
 	
-	public Chart[] getCharts() throws IOException {
-		ProcessBuilder pb = new ProcessBuilder("sh", "-c", HELM_COMMAND + " search repo " + HELM_REPO + " -o json 2>&1; true");
+	
+	private Chart[] getCharts() throws IOException {
+		ProcessBuilder pb = new ProcessBuilder("sh", "-c", helmCommand + " search repo " + helmRepo + " -o json 2>&1; true");
 		Process process = pb.start();
 				
         BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
@@ -66,8 +88,9 @@ public class HelmTasklet implements Tasklet, InitializingBean {
         return charts;
 	}
 	
-	public Release[] getReleases() throws IOException {
-		ProcessBuilder pb = new ProcessBuilder("sh", "-c", HELM_COMMAND + " list -o json 2>&1; true");
+	
+	private Release[] getReleases() throws IOException {
+		ProcessBuilder pb = new ProcessBuilder("sh", "-c", helmCommand + " list -o json 2>&1; true");
 		Process process = pb.start();
 				
         BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
@@ -85,8 +108,8 @@ public class HelmTasklet implements Tasklet, InitializingBean {
         return releases;
 	}
 	
-	public String upgradeRelease(String releaseName, String chartName) throws IOException {
-		ProcessBuilder pb = new ProcessBuilder("sh", "-c", HELM_COMMAND + " upgrade " + releaseName + " " + chartName + " 2>&1; true");
+	private String upgradeRelease(String releaseName, String chartName) throws IOException {
+		ProcessBuilder pb = new ProcessBuilder("sh", "-c", helmCommand + " upgrade " + releaseName + " " + chartName + " 2>&1; true");
 		Process process = pb.start();
 				
         BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
@@ -101,7 +124,6 @@ public class HelmTasklet implements Tasklet, InitializingBean {
         return output.toString();
 	}
 	
-
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		// TODO Auto-generated method stub
@@ -112,6 +134,9 @@ public class HelmTasklet implements Tasklet, InitializingBean {
 	public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
 		try {	   
 			String result;
+			
+			LOG.info("STEP00: Configure Helm Command");
+			configureHelmCommand(chunkContext);
 			
 			LOG.info("STEP01: Updating Chart Repositories");
 			result = updateChartRepositories();
