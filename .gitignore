@@ -31,7 +31,3 @@ build/
 
 ### VS Code ###
 .vscode/
-
-### poc-helm-agent
-*.db
-.DS_Store
