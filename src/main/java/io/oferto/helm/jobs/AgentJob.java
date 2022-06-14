@@ -29,20 +29,20 @@ import io.oferto.helm.tasklets.HelmTasklet;
 public class AgentJob {
 	@Autowired
 	private JobBuilderFactory jobBuilderFactory;
-	
+
 	@Autowired
 	private StepBuilderFactory stepBuilderFactory;
 
 	@Autowired
 	private JobLauncher jobLauncher;
 
-	@Value("${HELM_COMMAND:#{null}}") 
+	@Value("${HELM_COMMAND:#{null}}")
 	String helmCommand;
 
-	@Value("${HELM_REPO:#{null}}") 
+	@Value("${HELM_REPO:#{null}}")
 	String helmRepo;
-	
-	@Scheduled(cron = "0 0/1 * * * *")
+
+	@Scheduled(cron = "${JOB_CRON_CONFIG:0 0/1 * * * *}")
 	public void jobScheduler() throws Exception {
 		System.out.println("Job Started at :" + new Date());
 
@@ -56,7 +56,7 @@ public class AgentJob {
 
 		System.out.println("Job finished with status :" + jobExecution.getStatus());
 	}
-	
+
 	@Bean
 	public Job updateReleases() {
 		return jobBuilderFactory.get("updateReleases")
@@ -65,25 +65,25 @@ public class AgentJob {
 				.end()
 				.build();
 	}
-	
+
 	@Bean
 	public Step step() {
 		return stepBuilderFactory.get("step")
 				.tasklet(helmTasklet())
 				.build();
 	}
-	
+
 	@Bean
 	public HelmTasklet helmTasklet() {
 		HelmTasklet tasklet = new HelmTasklet();
-		
+
 		return tasklet;
 	}
-	
+
 	public JobLauncher getJobLauncher(JobRepository jobRepository) {
 		SimpleJobLauncher jobLauncher = new SimpleJobLauncher();
 		jobLauncher.setJobRepository(jobRepository);
-		
+
 		return jobLauncher;
 	}
 }
